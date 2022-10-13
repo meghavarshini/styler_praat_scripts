@@ -1,25 +1,26 @@
-# Will Styler
+# Modified by Megh Krishnaswamy for use case, original code by Will Styler
 # TextGrid information extraction script
 # Gathers labels from other tiers on Textgrids
 # So if you want to find the label from another tier corresponding to the time of another tier
+	#Note: this schema has 2 tiers in the textgrid, and separated by space, not tabs 
 
 
 grid$ = selected$ ("TextGrid")
-resultfile$ = "'grid$'_info.txt"
+resultfile$ = "'grid$'.txt"
 
-header_row$ = "gridname" + tab$ + "segment" + tab$ + "previousword" + tab$ + "word" + tab$ + "duration" + tab$ + "intensity" + newline$
+# Extracting start and end time, label in tier-2, contents of tier-1
+header_row$ = "#"+ tab$ + "start"+ " " + "end" + " " + "addressee" + " " + "transcript" + " " + newline$
 fileappend "'resultfile$'" 'header_row$'
 
 
 selectObject: "TextGrid 'grid$'"
-
 numint = Get number of intervals... 2
 # Start the loop
 for i from 1 to numint
-	label = ""
+	lab$ = ""
 	selectObject: "TextGrid 'grid$'"
-	label$ = Get label of interval: 2, 'i'
-	if label$ <> ""
+	lab$ = Get label of interval: 2, 'i'
+	if lab$ <> ""
 		vstart = Get start point: 2, 'i'
 		vend = Get end point: 2, 'i'
 		vdur = vend - vstart
@@ -30,13 +31,7 @@ for i from 1 to numint
 		lab1$ = Get label of interval... 1 int1
 		# print "'vdur'"
 		prevint = int1 - 1
-		labpre$ = Get label of interval... 1 'prevint'
-		int3 = Get interval at time... 3 'midpoint'
-		dur = Get label of interval... 3 'int3'
-		int4 = Get interval at time... 4 'midpoint'
-		intensity = Get label of interval... 4 'int4'
-		result_row$ = "'grid$'" + tab$ + "'label$'" + tab$ + "'labpre$'" + tab$ + "'lab1$'" + tab$ + "'dur'" + tab$ + "'intensity'" + newline$
+		result_row$ =  "'vstart'" + " " + "'vend'" + " " + "'lab$'" + ": " + "'lab1$'" + " " + newline$ + newline$
 		fileappend "'resultfile$'" 'result_row$'
 	endif	
 endfor
-
